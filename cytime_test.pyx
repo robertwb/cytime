@@ -1,4 +1,5 @@
 import math
+import sys
 import time
 import unittest
 
@@ -38,10 +39,12 @@ class CyTimeTest(unittest.TestCase):
             self.assertLess(abs(actual - secs), 1e-2)
 
     def test_time(self):
+        # Python 3 rounds differently.
+        epsilon = 0 if sys.version_info[0] < 3 else 1e-6
         t1 = time.time()
         t2 = cytime.time()
         t3 = time.time()
         t4 = cytime.time()
-        self.assertLessEqual(t1, t2)
-        self.assertLessEqual(t2, t3)
-        self.assertLessEqual(t3, t4)
+        self.assertLessEqual(t1, t2 + epsilon)
+        self.assertLessEqual(t2, t3 + epsilon)
+        self.assertLessEqual(t3, t4 + epsilon)
