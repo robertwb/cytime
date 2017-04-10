@@ -1,0 +1,9 @@
+recursive-include . *.pyx *.pxd
+recursive-exclude . *.c
+exclude cytime/*.c
+exclude *.c
+include cytime/timemodule.c
+
+include README.md
+include LICENSE
+
