@@ -1,3 +1,6 @@
+/* Modified copy of timemodule.c from Python 2.7
+ * https://github.com/python/cpython/blob/2.7/Modules/timemodule.c
+ */
 
 /* Subset of the Time module */
 
