@@ -143,24 +143,24 @@ floatsleep(double secs)
     secs = floor(secs);
     t.tv_sec = (long)secs;
     t.tv_usec = (long)(frac*1000000.0);
-    Py_BEGIN_ALLOW_THREADS
+    //Py_BEGIN_ALLOW_THREADS
     if (select(0, (fd_set *)0, (fd_set *)0, (fd_set *)0, &t) != 0) {
 #ifdef EINTR
         if (errno != EINTR) {
 #else
         if (1) {
 #endif
-            Py_BLOCK_THREADS
-            PyErr_SetFromErrno(PyExc_IOError);
+            //Py_BLOCK_THREADS
+            //PyErr_SetFromErrno(PyExc_IOError);
             return -1;
         }
     }
-    Py_END_ALLOW_THREADS
+    //Py_END_ALLOW_THREADS
 #elif defined(__WATCOMC__) && !defined(__QNX__)
     /* XXX Can't interrupt this sleep */
-    Py_BEGIN_ALLOW_THREADS
+    //Py_BEGIN_ALLOW_THREADS
     delay((int)(secs * 1000 + 0.5));  /* delay() uses milliseconds */
-    Py_END_ALLOW_THREADS
+    //Py_END_ALLOW_THREADS
 #elif defined(MS_WINDOWS)
     {
         double millisecs = secs * 1000.0;
@@ -171,7 +171,7 @@ floatsleep(double secs)
                             "sleep length is too large");
             return -1;
         }
-        Py_BEGIN_ALLOW_THREADS
+        //Py_BEGIN_ALLOW_THREADS
         /* Allow sleep(0) to maintain win32 semantics, and as decreed
          * by Guido, only the main thread can be interrupted.
          */
@@ -188,23 +188,23 @@ floatsleep(double secs)
                  * handler called.
                  */
                 Sleep(1);
-                Py_BLOCK_THREADS
+                //Py_BLOCK_THREADS
                 errno = EINTR;
-                PyErr_SetFromErrno(PyExc_IOError);
+                //PyErr_SetFromErrno(PyExc_IOError);
                 return -1;
             }
         }
-        Py_END_ALLOW_THREADS
+        //Py_END_ALLOW_THREADS
     }
 #elif defined(PYOS_OS2)
     /* This Sleep *IS* Interruptable by Exceptions */
-    Py_BEGIN_ALLOW_THREADS
+    //Py_BEGIN_ALLOW_THREADS
     if (DosSleep(secs * 1000) != NO_ERROR) {
         Py_BLOCK_THREADS
         PyErr_SetFromErrno(PyExc_IOError);
         return -1;
     }
-    Py_END_ALLOW_THREADS
+    //Py_END_ALLOW_THREADS
 #elif defined(__BEOS__)
     /* This sleep *CAN BE* interrupted. */
     {
@@ -212,23 +212,23 @@ floatsleep(double secs)
             return;
         }
 
-        Py_BEGIN_ALLOW_THREADS
+        //Py_BEGIN_ALLOW_THREADS
         /* BeOS snooze() is in microseconds... */
         if( snooze( (bigtime_t)( secs * 1000.0 * 1000.0 ) ) == B_INTERRUPTED ) {
-            Py_BLOCK_THREADS
-            PyErr_SetFromErrno( PyExc_IOError );
+            //Py_BLOCK_THREADS
+            //PyErr_SetFromErrno( PyExc_IOError );
             return -1;
         }
-        Py_END_ALLOW_THREADS
+        //Py_END_ALLOW_THREADS
     }
 #elif defined(RISCOS)
     if (secs <= 0.0)
         return 0;
-    Py_BEGIN_ALLOW_THREADS
+    //Py_BEGIN_ALLOW_THREADS
     /* This sleep *CAN BE* interrupted. */
     if ( riscos_sleep(secs) )
         return -1;
-    Py_END_ALLOW_THREADS
+    //Py_END_ALLOW_THREADS
 #elif defined(PLAN9)
     {
         double millisecs = secs * 1000.0;
@@ -237,19 +237,19 @@ floatsleep(double secs)
             return -1;
         }
         /* This sleep *CAN BE* interrupted. */
-        Py_BEGIN_ALLOW_THREADS
+        //Py_BEGIN_ALLOW_THREADS
         if(sleep((long)millisecs) < 0){
-            Py_BLOCK_THREADS
-            PyErr_SetFromErrno(PyExc_IOError);
+            //Py_BLOCK_THREADS
+            //PyErr_SetFromErrno(PyExc_IOError);
             return -1;
         }
-        Py_END_ALLOW_THREADS
+        //Py_END_ALLOW_THREADS
     }
 #else
     /* XXX Can't interrupt this sleep */
-    Py_BEGIN_ALLOW_THREADS
+    //Py_BEGIN_ALLOW_THREADS
     sleep((int)secs);
-    Py_END_ALLOW_THREADS
+    //Py_END_ALLOW_THREADS
 #endif
 
     return 0;

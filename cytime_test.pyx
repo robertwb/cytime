@@ -31,20 +31,25 @@ class CyTimeTest(unittest.TestCase):
             [.01, .1, 1, 10, 100])
 
     def test_sleep(self):
+        cdef double secs
         for secs in self.exp_range(.001, 2, 17):
             t = time.time()
-            cytime.sleep(secs)
+            with nogil:
+                cytime.sleep(secs)
             actual = time.time() - t
             print secs, actual
             self.assertLess(abs(actual - secs), 1e-2)
 
     def test_time(self):
+        cdef double t1, t2, t3, t4
         # Python 3 rounds differently.
         epsilon = 0 if sys.version_info[0] < 3 else 1e-6
         t1 = time.time()
-        t2 = cytime.time()
+        with nogil:
+            t2 = cytime.time()
         t3 = time.time()
-        t4 = cytime.time()
+        with nogil:
+            t4 = cytime.time()
         self.assertLessEqual(t1, t2 + epsilon)
         self.assertLessEqual(t2, t3 + epsilon)
         self.assertLessEqual(t3, t4 + epsilon)
