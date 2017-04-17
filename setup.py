@@ -5,6 +5,7 @@ from Cython.Build.Dependencies import cythonize
 setup(
     name="cytime",
     author="Robert Bradshaw",
+    author_email="robertwb@gmail.com",
     version='0.1',
     url="https://github.com/robertwb/cytime",
     description="Cdef wrappings of functions from Python's time module.",
